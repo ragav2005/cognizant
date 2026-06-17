@@ -1,3 +1,5 @@
+-- TASK 1: CREATE DB AND TABLES
+
 CREATE DATABASE college_db;
 
 CREATE TABLE departments(
