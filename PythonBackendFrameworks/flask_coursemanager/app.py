@@ -1,12 +1,21 @@
 from config import Config
-from courses.routes import courses_bp
 from flask import Flask, jsonify
+from extensions import db, migrate
 
 
 def create_app():
+
     app = Flask(__name__)
 
     app.config.from_object(Config)
+
+    db.init_app(app)
+
+    from courses import models
+
+    migrate.init_app(app, db)
+
+    from courses.routes import courses_bp
 
     app.register_blueprint(courses_bp)
 
@@ -15,7 +24,7 @@ def create_app():
         return jsonify({"status": "error", "message": "Resource not found"}), 404
 
     @app.errorhandler(500)
-    def internal_server_error(error):
+    def internal(error):
         return jsonify({"status": "error", "message": "Internal Server Error"}), 500
 
     return app
