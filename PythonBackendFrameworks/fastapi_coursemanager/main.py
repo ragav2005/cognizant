@@ -1,5 +1,5 @@
 from typing import Optional
-
+from models import User
 from database import Base, engine, get_db
 from fastapi import (
     APIRouter,
@@ -14,7 +14,11 @@ from fastapi import (
 )
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from models import Course, Enrollment, Student
+from fastapi.security import OAuth2PasswordBearer
+from fastapi.middleware.cors import CORSMiddleware
+from jose import JWTError, jwt
+from datetime import datetime, timedelta
+from models import Course, Enrollment, Student, User
 from schemas import (
     CourseCreate,
     CourseListResponse,
@@ -25,20 +29,43 @@ from schemas import (
     ErrorResponse,
     StudentCreate,
     StudentResponse,
+    UserRegister,
+    UserResponse,
+    LoginRequest,
+    Token,
 )
 from sqlalchemy import func, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from security import (
+    get_password_hash,
+    verify_password,
+)
 
 app = FastAPI(
     title="Course Management API",
     description="REST API for managing courses, students, and enrollments.",
     version="1.0.0",
-    contact={"name": "Digital Nurture Team", "email": "support@example.com"},
 )
 
 API_PREFIX = "/api/v1"
+
+# JWT settings
+SECRET_KEY = "change-me-please-use-env-variable"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{API_PREFIX}/auth/login/")
+
+# Configure CORS to allow frontend dev server
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def error_payload(code: str, message: str, field: Optional[str] = None) -> dict:
@@ -186,6 +213,34 @@ def pagination_links(
     return next_url, previous_url
 
 
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+
+async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)) -> User:
+    credentials_exception = HTTPException(
+        status_code=401,
+        detail={"code": "UNAUTHORIZED", "message": "Could not validate credentials"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    result = await db.execute(select(User).where(User.email == email))
+    user = result.scalar_one_or_none()
+    if user is None:
+        raise credentials_exception
+    return user
+
 router = APIRouter(prefix=API_PREFIX)
 
 
@@ -268,6 +323,7 @@ async def create_course(
     course: CourseCreate,
     response: Response,
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     new_course = Course(
         name=course.name,
@@ -370,7 +426,7 @@ async def patch_course(
     tags=["Courses"],
     responses={404: {"model": ErrorResponse}, 401: {"model": ErrorResponse}},
 )
-async def delete_course(course_id: int, db: AsyncSession = Depends(get_db)):
+async def delete_course(course_id: int, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
     course = await get_course_or_404(course_id, db)
     await db.delete(course)
     await db.commit()
@@ -591,6 +647,101 @@ async def delete_enrollment(enrollment_id: int, db: AsyncSession = Depends(get_d
     await db.delete(enrollment)
     await db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+
+async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)) -> User:
+    credentials_exception = HTTPException(
+        status_code=401,
+        detail={"code": "UNAUTHORIZED", "message": "Could not validate credentials"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    result = await db.execute(select(User).where(User.email == email))
+    user = result.scalar_one_or_none()
+    if user is None:
+        raise credentials_exception
+    return user
+
+
+@app.post(
+    "/api/v1/auth/login/",
+    response_model=Token,
+    status_code=status.HTTP_200_OK,
+    tags=["Authentication"],
+)
+async def login(
+    creds: LoginRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(select(User).where(User.email == creds.email))
+    user = result.scalar_one_or_none()
+    if not user or not verify_password(creds.password, user.hashed_password):
+        raise HTTPException(
+            status_code=401,
+            detail={"code": "UNAUTHORIZED", "message": "Incorrect email or password"},
+        )
+    access_token = create_access_token(
+        data={"sub": user.email}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+@app.post(
+    "/api/v1/auth/register/",
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED,
+    tags=["Authentication"],
+)
+async def register(
+    user: UserRegister,
+    db: AsyncSession = Depends(get_db),
+):
+
+    result = await db.execute(
+        select(User).where(
+            User.email == user.email
+        )
+    )
+
+    existing = result.scalar_one_or_none()
+
+    if existing:
+
+        raise HTTPException(
+            status_code=409,
+            detail="Email already registered",
+        )
+
+    new_user = User(
+        email=user.email,
+        hashed_password=get_password_hash(
+            user.password
+        ),
+    )
+
+    db.add(new_user)
+
+    await db.commit()
+
+    await db.refresh(new_user)
+
+    return new_user
 
 
 app.include_router(router)

@@ -1,5 +1,11 @@
 from database import Base
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import (
+    Boolean,
+    Column,
+    ForeignKey,
+    Integer,
+    String,
+)
 from sqlalchemy.orm import relationship
 
 
@@ -58,3 +64,25 @@ class Enrollment(Base):
     student = relationship("Student", back_populates="enrollments")
 
     course = relationship("Course", back_populates="enrollments")
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+
+    email = Column(
+        String,
+        unique=True,
+        nullable=False,
+        index=True,
+    )
+
+    hashed_password = Column(
+        String,
+        nullable=False,
+    )
+
+    is_active = Column(
+        Boolean,
+        default=True,
+    )
