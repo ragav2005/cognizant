@@ -67,3 +67,20 @@ class EnrollmentResponse(BaseModel):
     course_id: int
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class CourseListResponse(BaseModel):
+    count: int
+    next: Optional[str]
+    previous: Optional[str]
+    results: list[CourseResponse]
+
+
+class ErrorDetail(BaseModel):
+    code: str
+    message: str
+    field: Optional[str] = None
+
+
+class ErrorResponse(BaseModel):
+    error: ErrorDetail
