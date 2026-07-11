@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <header>
+
+        <h2 class="logo">Student Portal</h2>
+
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Courses</a></li>
+                <li><a href="#">Profile</a></li>
+                <li><a href="#">Grades</a></li>
+            </ul>
+        </nav>
+
+    </header>
+
+    <main>
+
+        <section id="hero">
+
+            <h1>Welcome to the Student Portal</h1>
+
+            <p>
+                Access your enrolled courses, grades and academic
+                information from anywhere.
+            </p>
+
+            <button>Explore Courses</button>
+
+        </section>
+
+        <section class="stats">
+
+            <div class="stat-item">
+                <h3>3</h3>
+                <p>Courses Enrolled</p>
+            </div>
+
+            <div class="stat-item">
+                <h3>3.8</h3>
+                <p>GPA</p>
+            </div>
+
+            <div class="stat-item">
+                <h3>6</h3>
+                <p>Semester</p>
+            </div>
+
+        </section>
+
+        <section id="courses">
+
+            <h2>Available Courses</h2>
+
+
+            <div class="search">
+
+            <input
+                type="text"
+                id="search-courses"
+                placeholder="Search courses..."
+            >
+
+            <button id="sort-btn">
+                Sort by Credits
+            </button>
+
+            </div>
+            <div class="course-grid"></div>
+
+            <p id="total-credits"></p>
+
+            <div id="selected-course"></div>
+
+        </section>
+
+        <section id="notifications">
+
+            <h2>Latest Notifications</h2>
+
+
+            <div id="spinner" class="spinner"></div>
+
+
+            <p id="error-message"></p>
+
+            <button id="retry-btn" style="display: none;">
+                Retry
+            </button>
+
+            <div id="notification-list"></div>
+
+        </section>
+
+    </main>
+
+    <footer>
+
+        <p>Student Portal. All Rights Reserved.</p>
+
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="./app.js"></script>
+
+</body>
+
+</html>

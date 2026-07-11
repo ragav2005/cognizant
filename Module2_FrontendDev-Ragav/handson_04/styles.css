@@ -1,0 +1,297 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+
+body{
+
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f4f6f9;
+    color:#333;
+    line-height:1.6;
+
+}
+
+
+header{
+
+    background:#1e3a8a;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:space-between;
+    padding: 20px 40px;
+
+}
+
+
+.logo{
+    font-size:clamp(1.5rem,3vw,2.5rem);
+}
+
+
+.nav-links{
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:25px;
+    list-style:none;
+
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:white;
+    font-weight:bold;
+}
+
+.nav-links a:hover{
+    text-decoration: underline;
+}
+
+#hero{
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+    min-height:30vh;
+    padding:20px 20px;
+
+    background:#dbeafe;
+
+}
+
+#hero h1{
+    margin-bottom:20px;
+    color:#1e3a8a;
+}
+
+#hero p{
+
+    max-width:600px;
+    margin-bottom:25px;
+
+}
+
+#hero button{
+
+    padding:12px 28px;
+    border:2px solid #1e3a8a;
+    background:#1e3a8a;
+    color:white;
+    cursor:pointer;
+    border-radius:6px;
+    transition:.3s;
+
+}
+
+#hero button:hover{
+    background:white;
+    color:#1e3a8a;
+}
+
+
+.stats{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    padding:30px;
+    background:white;
+
+}
+
+.stat-item{
+    flex:1;
+    text-align:center;
+    background:#eef3ff;
+    padding:20px;
+    border-radius:10px;
+}
+
+.stat-item h3{
+
+    color:#1e3a8a;
+    font-size:2rem;
+
+}
+
+
+#courses{
+
+    padding:40px 20px;
+
+}
+
+#courses h2{
+    margin-bottom:30px;
+    text-align:center;
+}
+
+
+.course-grid{
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:25px;
+
+}
+
+.course-card{
+    align-self:stretch;
+    min-height:220px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:20px;
+    box-shadow:0 4px 10px rgba(0,0,0,.1);
+
+}
+
+.course-card h3{
+    color:#1e3a8a;
+    margin-bottom:15px;
+
+}
+
+.course-card p{
+    margin-bottom:20px;
+}
+
+.course-card span{
+    font-weight:bold;
+}
+
+
+footer{
+    background:#1e3a8a;
+    color:white;
+    text-align:center;
+    padding:20px;
+    margin-top:40px;
+
+}
+
+.search{
+    display: flex;
+    gap: 50px;
+    width: auto;
+    margin-left: auto;
+    margin-bottom: 30px;
+
+}
+#search-courses{
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+#sort-btn{
+    padding: 0px 10px;
+    cursor: pointer;
+}
+
+#total-credits{
+    margin: 20px;
+}
+
+
+#selected-course{
+    display: none;
+    margin-top:20px;
+    padding:18px;
+    border-radius:10px;
+    background:linear-gradient(180deg, #ffffff, #f8fafc);
+    border:1px solid rgba(30,58,138,0.08);
+    box-shadow:0 6px 18px rgba(30,58,138,0.06);
+    max-width:420px;
+}
+
+#selected-course h3{
+    margin-bottom:8px;
+    color:#0f172a;
+}
+
+.course-card.active{
+    border-color:#1e3a8a;
+    box-shadow:0 8px 22px rgba(30,58,138,0.15);
+    transform:translateY(-4px);
+}
+
+.course-card{
+    transition:box-shadow .18s ease, transform .18s ease, border-color .18s ease;
+}
+
+.spinner {
+    display: none;
+    padding: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.loading {
+    display: none;
+    text-align: center;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+#error-message {
+    color: red;
+    margin: 20px 0;
+}
+
+#retry-btn {
+    display: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+#notification-list {
+    display: grid;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+@media(min-width:768px){
+
+header{
+
+    flex-direction:row;
+}
+
+.nav-links{
+
+    flex-direction:row;
+}
+
+.stats{
+    flex-direction:row;
+}
+
+.course-grid{
+    grid-template-columns:repeat(2,1fr);
+
+}
+
+}
+
+
+@media(min-width:1024px){
+.course-grid{
+    grid-template-columns:repeat(3,1fr);
+
+}
+
+#hero{
+    padding:100px 20px;
+
+}
+
+}
