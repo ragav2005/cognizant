@@ -1,0 +1,146 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f4f7fb;
+  color: #1f2937;
+}
+
+.header {
+  background-color: #1d4ed8;
+  color: #ffffff;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.enrolled-count {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+}
+
+.header nav a {
+  color: #ffffff;
+  text-decoration: none;
+  margin-left: 16px;
+  font-weight: 600;
+}
+
+.header nav a:hover {
+  text-decoration: underline;
+}
+
+.content {
+  flex: 1;
+  padding: 24px;
+  display: block;
+}
+
+.course-list-section {
+  max-width: auto;
+  margin: 0 20px;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 460px;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-bottom: 18px;
+}
+
+.course-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 16px;
+}
+
+.status-text {
+  grid-column: 1 / -1;
+  margin: 4px 0 12px;
+  font-weight: 600;
+}
+
+.error-text {
+  color: #b91c1c;
+}
+
+.course-card {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    height: 100%;
+}
+
+.course-card h2 {
+  margin: 0 0 10px;
+  color: #1d4ed8;
+}
+
+.course-card p {
+  margin: 6px 0;
+}
+
+.enroll-button {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #1d4ed8;
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.enroll-button:hover {
+  background-color: #1e40af;
+}
+
+.student-profile {
+    width: 50%;
+    margin-inline: auto;
+  margin-top: 24px;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+}
+
+.student-profile h2 {
+  margin: 0 0 12px;
+  color: #1d4ed8;
+}
+
+.profile-form {
+  display: grid;
+  gap: 10px;
+}
+
+.profile-form label {
+  font-weight: 600;
+}
+
+.profile-form input {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.footer {
+  background-color: #111827;
+  color: #f9fafb;
+  text-align: center;
+  padding: 14px;
+}
