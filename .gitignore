@@ -4,3 +4,6 @@ __pycache__/
 *.egg-info/
 .venv/
 PythonBackendFrameworks/handson_01/.venv/
+node_modules/
+Module2_FrontendDev-Ragav/handson_07/.angular/cache/18.2.21/student-portal-angular/
+dist/
